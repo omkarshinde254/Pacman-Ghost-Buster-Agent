@@ -258,7 +258,7 @@ class ParticleFilter(InferenceModule):
         self.particles = list()
 
         while True:
-            if cnt > self.particles: # do i need >= here ?
+            if cnt >= self.numParticles: # do i need >= here ?
                 # print ("Breaking")
                 break
             
@@ -267,7 +267,7 @@ class ParticleFilter(InferenceModule):
                     self.particles.append(pos)
                     # print(self.particles)
                     cnt = cnt + 1
-        
+
         # print (self.particles)
 
     def observe(self, observation, gameState):
@@ -305,23 +305,22 @@ class ParticleFilter(InferenceModule):
         # print("Packman Position-- ", pacmanPosition)
         "*** YOUR CODE HERE ***"
         
-        if noisyDistance:
+        if noisyDistance != None:
             belif = self.getBeliefDistribution()
             positions = util.Counter()
 
             for pos in self.legalPositions:
                 positions[pos] = positions[pos] + (emissionModel[util.manhattanDistance(pos, pacmanPosition)] * belif[pos])
             
-            if None in positions.values():
+            if not any(positions.values()):
                 self.initializeUniformly(gameState)
             else:
+                tmp = list()
                 for i in range(self.numParticles):
-                    self.particles.append(util.sample(belif))
+                    tmp.append(util.sample(belif))
+                self.particles = tmp
         else:
-            # self.particles = [self.getJailPosition()] * self.numParticles
-            for i in range(self.numParticles):
-                self.particles.append(self.getJailPosition())
-            
+            self.particles = [self.getJailPosition()] * self.numParticles
             
 
     def elapseTime(self, gameState):
@@ -343,9 +342,9 @@ class ParticleFilter(InferenceModule):
         for pos in self.particles:
             ghost_pos = self.setGhostPosition(gameState, pos)
             new_pos = self.getPositionDistribution(ghost_pos)
-            temporary_points.append(util.sample(new_pos))
-        
+            temporary_points.append(util.sample(new_pos))        
         self.particles = temporary_points
+
 
 
     def getBeliefDistribution(self):
@@ -357,11 +356,12 @@ class ParticleFilter(InferenceModule):
         """
         "*** YOUR CODE HERE ***"
         d_counter = util.Counter()
-        for particle in self.particles:
-            d_counter[particle] = d_counter[particle] + 1
+        for pos in self.particles:
+            d_counter[pos] = d_counter[pos] + 1
         
         # print(d_counter)
-        return d_counter.normalize()
+        d_counter.normalize()
+        return d_counter
 
 class MarginalInference(InferenceModule):
     """
