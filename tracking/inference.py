@@ -254,6 +254,21 @@ class ParticleFilter(InferenceModule):
         weight with each position) is incorrect and may produce errors.
         """
         "*** YOUR CODE HERE ***"
+        cnt = 0
+        self.particles = list()
+
+        while True:
+            if cnt > self.particles: # do i need >= here ?
+                # print ("Breaking")
+                break
+            
+            for pos in self.legalPositions:
+                if cnt < self.numParticles:
+                    self.particles.append(pos)
+                    print(self.particles)
+                    cnt = cnt + 1
+        
+        print (self.particles)
 
     def observe(self, observation, gameState):
         """
