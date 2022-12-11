@@ -265,10 +265,10 @@ class ParticleFilter(InferenceModule):
             for pos in self.legalPositions:
                 if cnt < self.numParticles:
                     self.particles.append(pos)
-                    print(self.particles)
+                    # print(self.particles)
                     cnt = cnt + 1
         
-        print (self.particles)
+        # print (self.particles)
 
     def observe(self, observation, gameState):
         """
@@ -316,7 +316,7 @@ class ParticleFilter(InferenceModule):
                 self.initializeUniformly(gameState)
             else:
                 for i in range(self.numParticles):
-                    self.particles.append(util.sample(allPossible))
+                    self.particles.append(util.sample(belif))
         else:
             # self.particles = [self.getJailPosition()] * self.numParticles
             for i in range(self.numParticles):
@@ -356,7 +356,12 @@ class ParticleFilter(InferenceModule):
         Counter object)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        d_counter = util.Counter()
+        for particle in self.particles:
+            d_counter[particle] = d_counter[particle] + 1
+        
+        # print(d_counter)
+        return d_counter.normalize()
 
 class MarginalInference(InferenceModule):
     """
