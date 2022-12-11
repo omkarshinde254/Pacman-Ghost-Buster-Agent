@@ -300,8 +300,29 @@ class ParticleFilter(InferenceModule):
         noisyDistance = observation
         emissionModel = busters.getObservationDistribution(noisyDistance)
         pacmanPosition = gameState.getPacmanPosition()
+        # print("Noisy Distance- ",noisyDistance)
+        # print("Emission model- ", emissionModel)
+        # print("Packman Position-- ", pacmanPosition)
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        
+        if noisyDistance:
+            belif = self.getBeliefDistribution()
+            positions = util.Counter()
+
+            for pos in self.legalPositions:
+                positions[pos] = positions[pos] + (emissionModel[util.manhattanDistance(pos, pacmanPosition)] * belif[pos])
+            
+            if None in positions.values():
+                self.initializeUniformly(gameState)
+            else:
+                for i in range(self.numParticles):
+                    self.particles.append(util.sample(allPossible))
+        else:
+            # self.particles = [self.getJailPosition()] * self.numParticles
+            for i in range(self.numParticles):
+                self.particles.append(self.getJailPosition())
+            
+            
 
     def elapseTime(self, gameState):
         """
