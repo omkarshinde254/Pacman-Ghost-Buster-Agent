@@ -303,7 +303,7 @@ class ParticleFilter(InferenceModule):
         # print("Noisy Distance- ",noisyDistance)
         # print("Emission model- ", emissionModel)
         # print("Packman Position-- ", pacmanPosition)
-        "*** YOUR CODE HERE ***"
+        "*** YOUR CODE HERE ***"        
         
         if noisyDistance != None:
             belif = self.getBeliefDistribution()
@@ -312,16 +312,28 @@ class ParticleFilter(InferenceModule):
             for pos in self.legalPositions:
                 positions[pos] = positions[pos] + (emissionModel[util.manhattanDistance(pos, pacmanPosition)] * belif[pos])
             
-            if not any(positions.values()):
+            positions_value = positions.values()
+            # print(positions_value)
+            false_flag = True
+            for val in positions_value:
+                if val == 0.0 or val == 0:
+                    continue
+                else:
+                    false_flag = False
+            if false_flag:
                 self.initializeUniformly(gameState)
             else:
                 tmp = list()
                 for i in range(self.numParticles):
-                    tmp.append(util.sample(belif))
+                    tmp.append(util.sample(positions))
                 self.particles = tmp
         else:
-            self.particles = [self.getJailPosition()] * self.numParticles
-            
+            tmp = []
+            for i in range(self.numParticles):
+                tmp.append(self.getJailPosition())
+            self.particles = tmp
+
+
 
     def elapseTime(self, gameState):
         """
