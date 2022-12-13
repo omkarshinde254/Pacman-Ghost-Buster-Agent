@@ -166,7 +166,7 @@ class GreedyBustersAgent(BustersAgent):
         ghostDistance = util.Counter()
         for dist in livingGhostPositionDistributions:
             # checking all distributions to find likeliest position for a ghost
-            # using  self.distancer.getDistance(pos1, pos2)
+            # using self.distancer.getDistance(pos1, pos2)
             likelyPos = dist.argMax()
             mazeDistance = self.distancer.getDistance(pacmanPosition, likelyPos)
             # to find the minimum (closest) later
@@ -178,7 +178,6 @@ class GreedyBustersAgent(BustersAgent):
             # compute distance
             successorDistance = self.distancer.getDistance(successorPosition, closestGhost)
             # if we have moved closer, return this action
-            if successorDistance < ghostDistance[closestGhost]:
+            if successorDistance < -ghostDistance[closestGhost]:
                 return action
-
-        pacman_dist_ghost = util.Counter()
+        return None
