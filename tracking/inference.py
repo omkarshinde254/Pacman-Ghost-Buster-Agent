@@ -286,6 +286,7 @@ class ParticleFilter(InferenceModule):
                     self.particles.append(pos)
                     # print(self.particles)
                     cnt = cnt + 1
+            # [self.particles.append(pos) for pos in self.legalPositions if cnt < self.numParticles]
 
         # print (self.particles)
 
@@ -369,12 +370,7 @@ class ParticleFilter(InferenceModule):
         a belief distribution.
         """
         "*** YOUR CODE HERE ***"
-        temporary_points = list()
-        for pos in self.particles:
-            ghost_pos = self.setGhostPosition(gameState, pos)
-            new_pos = self.getPositionDistribution(ghost_pos)
-            temporary_points.append(util.sample(new_pos))        
-        self.particles = temporary_points
+        self.particles = [util.sample(self.getPositionDistribution(self.setGhostPosition(gameState, pos))) for pos in self.particles]
 
 
 
@@ -389,6 +385,8 @@ class ParticleFilter(InferenceModule):
         d_counter = util.Counter()
         for pos in self.particles:
             d_counter[pos] = d_counter[pos] + 1
+        
+        # [d_counter[pos]=d_counter[pos] + 1 for pos in self.particles]
         
         # print(d_counter)
         d_counter.normalize()
